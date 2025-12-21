@@ -1,0 +1,37 @@
+# =========================
+# Inference Configuration
+# =========================
+
+# -------------------------
+# Model
+# -------------------------
+model_dir: "outputs/train_lm"   # same as cfg["output_dir"] during training
+device: "auto"                  # auto | cuda | cpu
+
+# -------------------------
+# Tokenization
+# -------------------------
+max_input_length: 512           # truncate prompt if longer than this
+
+# -------------------------
+# Generation Parameters
+# -------------------------
+max_new_tokens: 150             # number of tokens to generate
+do_sample: true                 # sampling vs greedy decoding
+
+temperature: 0.8                # randomness (1.0 = neutral)
+top_p: 0.9                      # nucleus sampling
+top_k: 50                       # optional, can be null
+repetition_penalty: 1.0         # >1.0 reduces repetition
+
+# -------------------------
+# Special Tokens
+# -------------------------
+pad_token: "eos"                # use EOS as PAD
+skip_special_tokens: true
+
+# -------------------------
+# Runtime
+# -------------------------
+use_fp16: false                 # set true if GPU supports fp16
+batch_size: 1                   # for batch inference
