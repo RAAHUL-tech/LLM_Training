@@ -43,6 +43,10 @@ model = AutoModelForCausalLM.from_pretrained(cfg["model_name"])
 model.gradient_checkpointing_enable()  # gradient checkpointing
 model.to(device)
 
+for name, module in model.named_modules():
+    if "attn" in name:
+        print(name)
+
 # -------------------------
 # Freeze base model & Add LoRA
 # -------------------------
@@ -52,7 +56,7 @@ for param in model.parameters():
 lora_config = LoraConfig(
     r=8,
     lora_alpha=16,
-    target_modules=["q_proj", "v_proj"],
+    target_modules=["c_attn", "c_proj"],
     lora_dropout=0.05,
     bias="none",
     task_type=TaskType.CAUSAL_LM
@@ -163,15 +167,10 @@ for epoch in range(cfg["num_epochs"]):
 
         global_step += 1
 
-        tqdm.write(
-            f"Epoch {epoch} | Step {global_step} | Loss: {loss.item():.4f} | "
-            f"Mem: {max_mem:.1f}MB | Step Time: {step_time:.2f}s"
-        )
-
 # -------------------------
 # Save LoRA adapters only
 # -------------------------
-model.save_pretrained(cfg["output_dir"] + "_lora")
-tokenizer.save_pretrained(cfg["output_dir"])
+model.save_pretrained(cfg["output_dir5"])
+tokenizer.save_pretrained(cfg["output_dir5"])
 
 wandb.finish()
